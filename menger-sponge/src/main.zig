@@ -1,3 +1,4 @@
+const std = @import("std");
 const rl = @import("raylib");
 const Vector3 = rl.Vector3;
 const Mesh = rl.Mesh;
@@ -19,12 +20,16 @@ const Box = struct {
         self.model.transform = self.model.transform.multiply(rl.Matrix.rotateZ(1.0 * 3.14159265358979323846 / 180.0));
     }
 
-    fn draw(self: *Box) void {
+    fn draw(self: Box) void {
         self.model.drawEx(self.pos, Vector3.init(1, 1, 1), 0.0, rl.Vector3.init(1, 1, 1), rl.Color.gold);
     }
 };
 
 pub fn main() anyerror!void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+
     const screenWidth = 800;
     const screenHeight = 450;
 
@@ -42,12 +47,16 @@ pub fn main() anyerror!void {
     rl.disableCursor(); // limit cursor to relative moment inside window
     rl.setTargetFPS(60);
 
-    var box = Box.init(0, 0, 0);
+    var boxes = std.ArrayList(Box).init(allocator);
+    defer boxes.deinit();
+    try boxes.append(Box.init(0, 0, 0));
 
     while (!rl.windowShouldClose()) { // Detect window close button or ESC key
         camera.update(rl.CameraMode.camera_first_person);
 
-        box.rotate();
+        for ((&boxes).items) |*box| {
+            box.rotate();
+        }
 
         rl.beginDrawing();
         defer rl.endDrawing();
@@ -58,7 +67,9 @@ pub fn main() anyerror!void {
             camera.begin();
             defer camera.end();
 
-            box.draw();
+            for (boxes.items) |box| {
+                box.draw();
+            }
         }
     }
 }
