@@ -28,24 +28,25 @@ const Box = struct {
     fn generate(self: Box, allocator: std.mem.Allocator) anyerror!std.ArrayList(Box) {
         var next = std.ArrayList(Box).init(allocator);
 
-        // std.debug.print("({},{},{})\n", .{ self.pos.x, self.pos.y, self.pos.z });
         var x: i8 = -1;
         while (x < 2) {
             var y: i8 = -1;
             while (y < 2) {
                 var z: i8 = -1;
                 while (z < 2) {
-                    const new_size = self.size / 3;
-                    // zig fmt: off
-                    const b = Box.init(
-                        self.pos.x + @as(f32, @floatFromInt(x)) * new_size,
-                        self.pos.y + @as(f32, @floatFromInt(y)) * new_size,
-                        self.pos.z + @as(f32, @floatFromInt(z)) * new_size,
-                        new_size
-                    );
-                    // std.debug.print("({},{},{})\n", .{b.pos.x, b.pos.y, b.pos.z});
-                    // zig fmt: on
-                    try next.append(b);
+                    const abs = @abs(x) + @abs(y) + @abs(z);
+                    if (abs > 1) {
+                        const new_size = self.size / 3;
+                        // zig fmt: off
+                        const b = Box.init(
+                            self.pos.x + @as(f32, @floatFromInt(x)) * new_size,
+                            self.pos.y + @as(f32, @floatFromInt(y)) * new_size,
+                            self.pos.z + @as(f32, @floatFromInt(z)) * new_size,
+                            new_size
+                        );
+                        // zig fmt: on
+                        try next.append(b);
+                    }
                     z += 1;
                 }
                 y += 1;
@@ -61,6 +62,8 @@ pub fn main() anyerror!void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
+
+    rl.setTraceLogLevel(rl.TraceLogLevel.log_error);
 
     const screenWidth = 800;
     const screenHeight = 450;
