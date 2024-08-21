@@ -8,6 +8,10 @@ function Segment:constructor(x1, y1, x2, y2)
     self.b = Vector.new(x2, y2)
 end
 
+function Segment:rotate()
+    return 
+end
+
 function Segment:draw()
     love.graphics.line(self.a.x, self.a.y, self.b.x, self.b.y)
 end

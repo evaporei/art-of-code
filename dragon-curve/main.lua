@@ -11,6 +11,9 @@ function love.load()
 end
 
 function love.keypressed(key)
+    if key == 'n' then
+    end
+
     if key == 'escape' then
         love.event.quit()
     end
