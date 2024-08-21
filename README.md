@@ -1,3 +1,3 @@
-# art of code
+# nature of code
 
 Some cool mathy visual experiments.
