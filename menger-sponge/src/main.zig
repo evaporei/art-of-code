@@ -86,11 +86,16 @@ pub fn main() anyerror!void {
         camera.update(rl.CameraMode.camera_first_person);
 
         if (rl.isKeyPressed(rl.KeyboardKey.key_j)) {
-            std.debug.print("before: {}\n", .{sponge.items.len});
-            const next = try sponge.items[0].generate(allocator);
+            var next = std.ArrayList(Box).init(allocator);
+
+            for (sponge.items) |box| {
+                var tmp = try box.generate(allocator);
+                try next.appendSlice(tmp.items);
+                tmp.deinit();
+            }
+
             sponge.deinit();
             sponge = next;
-            std.debug.print("after: {}\n", .{sponge.items.len});
         }
 
         // FIXME: rotation should be for the whole thing
