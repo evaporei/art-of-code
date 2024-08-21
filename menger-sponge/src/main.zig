@@ -32,8 +32,8 @@ pub fn main() anyerror!void {
     defer rl.closeWindow(); // Close window and OpenGL context
 
     var camera = rl.Camera3D{
-        .position = rl.Vector3.init(0, 0, 0),
-        .target = rl.Vector3.init(screenWidth / 2, screenHeight / 2, 0),
+        .position = rl.Vector3.init(screenWidth / 2, screenHeight / 2, 0),
+        .target = rl.Vector3.init(0, 0, 0),
         .up = rl.Vector3.init(0, 1, 0),
         .fovy = 60,
         .projection = rl.CameraProjection.camera_perspective,
@@ -42,7 +42,7 @@ pub fn main() anyerror!void {
     rl.disableCursor(); // limit cursor to relative moment inside window
     rl.setTargetFPS(60);
 
-    var box = Box.init(screenWidth / 2, screenHeight / 2, 0);
+    var box = Box.init(0, 0, 0);
 
     while (!rl.windowShouldClose()) { // Detect window close button or ESC key
         camera.update(rl.CameraMode.camera_first_person);
